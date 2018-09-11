@@ -32,7 +32,7 @@ RSpec.describe RjsToErb::PageRewriter do
       erb = rewrite(rjs_source)
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
-        $('factory_unit_uom_ratio_id').value = '<%= default_uom_ratio.id -%>';
+        $('factory_unit_uom_ratio_id').value = '<%= default_uom_ratio.id %>';
       EXPECTED_ERB
     end
 
@@ -44,7 +44,7 @@ RSpec.describe RjsToErb::PageRewriter do
       erb = rewrite(rjs_source)
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
-        $('planned_receipt_item_<@= @planned_receipt_item_id -%>_expiry_date').hide();
+        $('planned_receipt_item_<@= @planned_receipt_item_id %>_expiry_date').hide();
       EXPECTED_ERB
     end
 
@@ -58,7 +58,7 @@ RSpec.describe RjsToErb::PageRewriter do
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
         $('factory_unit_quantity').value = '';
-        $('factory_unit_uom_ratio_id').value = '<%= default_uom_ratio.id -%>';
+        $('factory_unit_uom_ratio_id').value = '<%= default_uom_ratio.id %>';
       EXPECTED_ERB
     end
   end

@@ -21,7 +21,7 @@ module RjsToErb
             when :str
               arg.children.first
             else
-              "<%= #{Unparser.unparse(arg.children.first)} -%>"
+              "<%= #{Unparser.unparse(arg.children.first)} %>"
             end
           end.join
         else
