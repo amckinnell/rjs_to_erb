@@ -1,0 +1,22 @@
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+  Exclude:
+    - Rakefile
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+

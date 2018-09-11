@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/rjs_to_erb"
+
+RjsToErb::Runner.new(ARGV).execute

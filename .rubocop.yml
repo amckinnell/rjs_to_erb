@@ -1,0 +1,12 @@
+require: rubocop-rspec
+
+inherit_from:
+  - .rubocop_todo.yml
+  - .rubocop.enabled.yml
+  - .rubocop.disabled.yml
+
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+  - bin/*
+  - rjs_to_erb.gemspec
