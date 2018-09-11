@@ -111,7 +111,7 @@ RSpec.describe RjsToErb::PageRewriter do
       erb = rewrite(rjs_source, "./modules/ip_whitelisting/app/views/ip_white_list_entries/create.js.rjs")
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
-        <%= page_replace(:ip_white_list_entry, partial: "new") %>
+        <%= page_replace(:ip_white_list_entry, partial: "ip_white_list_entries/new") %>
       EXPECTED_ERB
     end
   end
@@ -175,7 +175,7 @@ RSpec.describe RjsToErb::PageRewriter do
       erb = rewrite(rjs_source, "./modules/shipping/app/views/pallet_shipments/edit.js.rjs")
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
-        <%= page_replace(table_row_id(@pallet_shipment), partial: "edit", locals: { pallet_shipment: @pallet_shipment }) %>
+        <%= page_replace(table_row_id(@pallet_shipment), partial: "pallet_shipments/edit", locals: { pallet_shipment: @pallet_shipment }) %>
 
         $$('.data-row.highlight').invoke('removeClassName', 'highlight');
       EXPECTED_ERB

@@ -52,16 +52,7 @@ module RjsToErb
       end
 
       def partial
-        "partial: \"#{partial_path(args[1].to_a)}\""
-      end
-
-      def partial_path(render_args)
-        path = render_args[0].to_a.last.to_a.last
-        controller_path_components = Pathname.new(rjs_filename).dirname
-
-        return path if controller_path_components.to_s == "."
-
-        path.gsub(/^#{controller_path_components.split.last}./, "")
+        "partial: \"#{args[1].to_a[0].to_a.last.to_a.last}\""
       end
     end
   end
