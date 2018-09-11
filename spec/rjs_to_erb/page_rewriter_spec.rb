@@ -36,15 +36,15 @@ RSpec.describe RjsToErb::PageRewriter do
       EXPECTED_ERB
     end
 
-    xit "identifier with interpolation" do
+    it "identifier with interpolation" do
       rjs_source = <<~'RJS'
-        page << "$('planned_receipt_item_\#{@planned_receipt_item_id}_expiry_date').hide();"
+        page << "$('planned_receipt_item_#{@planned_receipt_item_id}_expiry_date').hide();"
       RJS
 
       erb = rewrite(rjs_source)
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
-        $('planned_receipt_item_<@= @planned_receipt_item_id %>_expiry_date').hide();
+        $('planned_receipt_item_<%= @planned_receipt_item_id %>_expiry_date').hide();
       EXPECTED_ERB
     end
 
