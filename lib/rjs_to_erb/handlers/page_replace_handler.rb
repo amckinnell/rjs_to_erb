@@ -1,11 +1,9 @@
 module RjsToErb
   module Handlers
     class PageReplaceHandler < RjsToErb::Handlers::PageHandler
-      attr_reader :args, :method_name, :rjs_filename
+      attr_reader :args, :method_name
 
-      def initialize(rjs_filename, node)
-        @rjs_filename = rjs_filename
-
+      def initialize(node)
         _receiver_node, method_name, *args = *node
 
         @method_name = method_name

@@ -3,7 +3,7 @@ module RjsToErb
     class PageShovelHandler < RjsToErb::Handlers::PageHandler
       attr_reader :args
 
-      def initialize(_rjs_filename, node)
+      def initialize(node)
         _receiver_node, _method_name, *args = *node
 
         raise RjsToErb::MustTranslateManually unless args.size == 1

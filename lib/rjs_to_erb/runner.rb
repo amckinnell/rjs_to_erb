@@ -52,7 +52,7 @@ module RjsToErb
     def rjs_rewritten_as_erb
       rjs_source = File.read(current_filename)
 
-      RjsToErb::Rewriter.rewrite_rjs(current_filename, rjs_source)
+      RjsToErb::Rewriter.rewrite_rjs(rjs_source)
     end
 
     def rjs_template?

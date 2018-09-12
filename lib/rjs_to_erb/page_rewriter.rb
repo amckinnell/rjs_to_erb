@@ -2,12 +2,6 @@ module RjsToErb
   class PageRewriter < Parser::TreeRewriter
     include Unparser::NodeHelpers
 
-    attr_reader :rjs_filename
-
-    def initialize(rjs_filename)
-      @rjs_filename = rjs_filename
-    end
-
     def on_if(*)
       raise RjsToErb::MustTranslateManually
     end
@@ -37,11 +31,11 @@ module RjsToErb
     private
 
     def handle_page_replace(node)
-      RjsToErb::Handlers::PageReplaceHandler.new(rjs_filename, node).handle
+      RjsToErb::Handlers::PageReplaceHandler.new(node).handle
     end
 
     def handle_page_shovel(node)
-      RjsToErb::Handlers::PageShovelHandler.new(rjs_filename, node).handle
+      RjsToErb::Handlers::PageShovelHandler.new(node).handle
     end
   end
 end

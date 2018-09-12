@@ -108,7 +108,7 @@ RSpec.describe RjsToErb::PageRewriter do
         )
       RJS
 
-      erb = rewrite(rjs_source, "./modules/ip_whitelisting/app/views/ip_white_list_entries/create.js.rjs")
+      erb = rewrite(rjs_source)
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
         <%= page_replace(:ip_white_list_entry, partial: "ip_white_list_entries/new") %>
@@ -130,7 +130,7 @@ RSpec.describe RjsToErb::PageRewriter do
     end
   end
 
-  context "ruby logic" do
+  context "fails for ruby logic" do
     it "fails to rewrite if" do
       rjs_source = <<~'RJS'
         if @customer
@@ -164,6 +164,26 @@ RSpec.describe RjsToErb::PageRewriter do
     end
   end
 
+  context "ruby logic" do
+    xit "rewrites if" do
+      rjs_source = <<~'RJS'
+        if @customer
+          page << "$('shipment_outbound_trailer_bill_to').setValue('#{j @customer.name}')"
+          page << "$('shipment_outbound_trailer_bill_to_address').setValue('#{j @customer.billing_address}')"
+        end
+      RJS
+
+      erb = rewrite(rjs_source)
+
+      expect(erb).to eq(<<~'EXPECTED_ERB')
+        <% if @customer %>
+          $('shipment_outbound_trailer_bill_to').setValue('<%= j @customer.name %>')
+          $('shipment_outbound_trailer_bill_to_address').setValue('<%= j @customer.billing_address %>')
+        <% end %>
+      EXPECTED_ERB
+    end
+  end
+
   context "odds and sods" do
     it "unknown failure" do
       rjs_source = <<~'RJS'
@@ -172,7 +192,7 @@ RSpec.describe RjsToErb::PageRewriter do
         page << "$$('.data-row.highlight').invoke('removeClassName', 'highlight');"
       RJS
 
-      erb = rewrite(rjs_source, "./modules/shipping/app/views/pallet_shipments/edit.js.rjs")
+      erb = rewrite(rjs_source)
 
       expect(erb).to eq(<<~'EXPECTED_ERB')
         <%= page_replace(table_row_id(@pallet_shipment), partial: "pallet_shipments/edit", locals: { pallet_shipment: @pallet_shipment }) %>
@@ -182,73 +202,13 @@ RSpec.describe RjsToErb::PageRewriter do
     end
   end
 
-  context "ruby logic" do
-    xit "rewrites ruby logic" do
-      rjs_source = <<~RJS
-        unless @sku.track_expiry_date?
-          page << "$('planned_receipt_item_expiry_date').hide()"
-          page << "$('planned_receipt_item_expiry_date').clear()"
-        end
-      RJS
-
-      erb = rewriter.rewrite_rjs(rjs_source)
-
-      expected_erb = <<~ERB.chomp
-        <% unless @sku.track_expiry_date? %>
-          $('planned_receipt_item_expiry_date').hide()
-          $('planned_receipt_item_expiry_date').clear()
-        <% end %>
-      ERB
-
-      expect(erb).to eq(expected_erb)
-    end
-
-    xit "rewrites complex ruby logic" do
-      rjs_source = <<~RJS
-        if @jobs.empty?
-          page.replace_html 'job_replace', ''
-        else
-          page.replace_html 'job_replace', :partial => 'choose_job', :locals => { :move => @move, :jobs => @jobs }
-        end
-
-        page << "$j('#attributes-div').hide();$j('#from_pallet_number').val('');"
-
-        if @line && @jobs.empty?
-          page << "$j('#new-move-form').show()"
-        else
-          page << "$j('#new-move-form').hide();"
-        end
-      RJS
-
-      erb = rewriter.rewrite_rjs(rjs_source)
-
-      expected_erb = <<~ERB.chomp
-        <% if @jobs.empty? %>
-          <%= page.replace_html_with_html(:job_replace, "") %>
-        <% else %>
-          <%= page.replace_html(:job_replace, partial: "choose_job", locals: { move: @move, jobs: @jobs }) %>
-        <% end %>
-
-        $j('#attributes-div').hide();$j('#from_pallet_number').val('');
-
-        <% if @line && @jobs.empty? %>
-          $j('#new-move-form').show()
-        <% else %>
-          $j('#new-move-form').hide();
-        <% end %>
-      ERB
-
-      expect(erb).to eq(expected_erb)
-    end
-  end
-
-  def rewrite(rjs_source, filename = "_dont_care_")
+  def rewrite(rjs_source)
     buffer = create_buffer(rjs_source)
 
     parser = Parser::CurrentRuby.new
     ast = parser.parse(buffer)
 
-    RjsToErb::PageRewriter.new(filename).rewrite(buffer, ast)
+    RjsToErb::PageRewriter.new.rewrite(buffer, ast)
   end
 
   def create_buffer(rjs_source)
