@@ -11,7 +11,7 @@ module RjsToErb
     end
 
     def rewrite_rjs
-      rewrite_to_erb = PageRewriter.new
+      rewrite_to_erb = RjsRewriter.new
       rewrite_to_erb.rewrite(buffer, ast)
     end
 

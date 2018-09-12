@@ -1,32 +1,31 @@
 module RjsToErb
   module Handlers
     class PageShovelHandler < RjsToErb::Handlers::PageHandler
-      attr_reader :args
-
-      def initialize(node)
-        _receiver_node, _method_name, *args = *node
-
-        raise RjsToErb::MustTranslateManually unless args.size == 1
-
-        @args = args.first
-      end
-
       def handle
-        case args.type
+        content = case args.type
         when :str
-          args.children.first
+          args.to_a.first
         when :dstr
-          args.children.map do |arg|
+          args.to_a.map do |arg|
             case arg.type
             when :str
-              arg.children.first
+              arg.to_a.first
             else
-              "<%= #{Unparser.unparse(arg.children.first)} %>"
+              "<%= #{Unparser.unparse(arg.to_a.first)} %>"
             end
           end.join
         else
           raise RjsToErb::MustTranslateManually
         end
+
+        replace_range = node.location.expression
+        rewriter.replace(replace_range, content)
+      end
+
+      private
+
+      def args
+        node.to_a[2..-1].first
       end
     end
   end

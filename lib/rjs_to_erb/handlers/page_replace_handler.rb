@@ -1,21 +1,22 @@
 module RjsToErb
   module Handlers
     class PageReplaceHandler < RjsToErb::Handlers::PageHandler
-      attr_reader :args, :method_name
-
-      def initialize(node)
-        _receiver_node, method_name, *args = *node
-
-        @method_name = method_name
-        @args = args
-      end
-
       def handle
         raise RjsToErb::MustTranslateManually unless args.size == 2
 
-        <<~ERB.chomp
-          <%= #{method_call}(#{[dom_id, partial, locals].compact.join(", ")}) %>
-        ERB
+        content = case args[1].type
+        when :hash
+          <<~ERB.chomp
+            <%= #{method_call}(#{[dom_id, partial, locals].compact.join(", ")}) %>
+          ERB
+        else
+          <<~ERB.chomp
+            <%= page_replace_html_with_html(#{dom_id}, #{html_content}) %>
+          ERB
+        end
+
+        replace_range = node.location.expression
+        rewriter.replace(replace_range, content)
       end
 
       private
@@ -41,6 +42,10 @@ module RjsToErb
         end
       end
 
+      def html_content
+        Unparser.unparse(args[1])
+      end
+
       def locals
         args[1].to_a[1].to_a.empty? ? nil : "locals: #{Unparser.unparse(args[1].to_a[1].to_a.last)}"
       end
@@ -51,6 +56,14 @@ module RjsToErb
 
       def partial
         "partial: \"#{args[1].to_a[0].to_a.last.to_a.last}\""
+      end
+
+      def method_name
+        node.to_a[1]
+      end
+
+      def args
+        node.to_a[2..-1]
       end
     end
   end

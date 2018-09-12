@@ -2,6 +2,6 @@
 
 gem uninstall -x -q --silent rjs_to_erb
 gem build -q --silent rjs_to_erb.gemspec
-gem install -q --silent rjs_to_erb-0.1.0.gem
+gem install -q --silent rjs_to_erb-0.2.0.gem
 
 gem list rjs_to_erb

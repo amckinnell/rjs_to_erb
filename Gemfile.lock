@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rjs_to_erb (0.1.0)
+    rjs_to_erb (0.2.0)
       astrolabe (~> 1.3)
       parser (~> 2.5)
       unparser (~> 0.2)

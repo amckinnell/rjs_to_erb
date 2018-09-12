@@ -34,7 +34,7 @@ module RjsToErb
         File.write(erb_filename, rewritten_erb)
 
         @conversions << <<~MSG.chomp
-          Success #{File.basename(current_filename)} -> #{File.basename(erb_filename)}
+          Success #{current_filename} -> #{File.basename(erb_filename)}
         MSG
       end
     end
@@ -63,11 +63,11 @@ module RjsToErb
       yield
     rescue RjsToErb::MustTranslateManually
       @conversions << <<~MSG.chomp
-        Failure #{File.basename(current_filename)}. Manual translation required.
+        Failure #{current_filename}. Manual translation required.
       MSG
     rescue => e
       @conversions << <<~MSG.chomp
-        Failure #{File.basename(current_filename)}. Error: #{e.message}
+        Failure #{current_filename}. Error: #{e.message}
       MSG
     end
   end
